@@ -1,13 +1,38 @@
-<div align="center">
+# Fork 
 
-[![Tests](https://github.com/huggingface/lighteval/actions/workflows/tests.yaml/badge.svg?branch=main)](https://github.com/huggingface/lighteval/actions/workflows/tests.yaml?query=branch%3Amain)
-[![Quality](https://github.com/huggingface/lighteval/actions/workflows/quality.yaml/badge.svg?branch=main)](https://github.com/huggingface/lighteval/actions/workflows/quality.yaml?query=branch%3Amain)
-[![Python versions](https://img.shields.io/pypi/pyversions/lighteval)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/huggingface/lighteval/blob/main/LICENSE)
-[![Status](https://img.shields.io/pypi/status/lighteval)](https://pypi.org/project/lighteval/)
-[![Version](https://img.shields.io/pypi/v/lighteval)](https://pypi.org/project/lighteval/)
+## Run a single example 
+```bash
+# single gpu
+python run_evals_accelerate.py \
+    --model_args "pretrained=meta-llama/Meta-Llama-3-8B,dtype=fp16" \
+    --tasks "community|mmlu_de:global_facts|5|1" \
+    --custom_tasks "community_tasks/german_mmlu.py" \
+    --override_batch_size 2 \
+    --output_dir "evals"
+```
 
-</div>
+```bash
+# PP=4, DP=2 - good for models < 70B params
+accelerate launch --multi_gpu --num_processes=2 run_evals_accelerate.py \
+    --model_args "pretrained=meta-llama/Meta-Llama-3-8B,dtype=fp16,model_parallel=True" \
+    --tasks "community|mmlu_de:global_facts|5|1" \
+    --custom_tasks "community_tasks/german_mmlu.py" \
+    --override_batch_size 4 \
+    --output_dir "evals"
+```
+
+## Run from task file
+
+```bash
+# PP=4, DP=2 - good for models < 70B params
+accelerate launch --multi_gpu --num_processes=2 run_evals_accelerate.py \
+    --model_args "pretrained=meta-llama/Meta-Llama-3-8B,dtype=fp16,model_parallel=True" \
+    --tasks "examples/tasks/all_mmlu_de.txt" \
+    --custom_tasks "community_tasks/german_mmlu.py" \
+    --override_batch_size 4 \
+    --output_dir "evals"
+```
+
 
 # LightEval 🌤️
 
@@ -457,3 +482,6 @@ python3 -m build .
   url = {https://github.com/huggingface/lighteval}
 }
 ```
+
+
+# 
